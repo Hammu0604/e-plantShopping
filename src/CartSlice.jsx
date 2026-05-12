@@ -1,25 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  items: [],
+};
+
 export const CartSlice = createSlice({
   name: 'cart',
-  initialState: {
-    items: [], // Initialize items as an empty array
-  },
+  initialState,
   reducers: {
-    addItem: (state, action) => {
-      const { name, image, cost } = action.payload;
 
-      // Check if the item already exists in the cart
-      const existingItem = state.items.find(
-        (item) => item.name === name
-      );
+    // ADD ITEM TO CART
+    addItem: (state, action) => {
+      const { id, name, image, cost } = action.payload;
+
+      const existingItem = state.items.find(item => item.id === id);
 
       if (existingItem) {
-        // If item exists, increase quantity
-        existingItem.quantity++;
+        existingItem.quantity += 1;
       } else {
-        // If item does not exist, add it with quantity 1
         state.items.push({
+          id,
           name,
           image,
           cost,
@@ -28,30 +28,24 @@ export const CartSlice = createSlice({
       }
     },
 
+    // REMOVE ITEM FROM CART
     removeItem: (state, action) => {
-      // Remove item by name
-      state.items = state.items.filter(
-        (item) => item.name !== action.payload
-      );
+      state.items = state.items.filter(item => item.id !== action.payload);
     },
 
+    // UPDATE QUANTITY
     updateQuantity: (state, action) => {
-      const { name, quantity } = action.payload;
+      const { id, quantity } = action.payload;
 
-      // Find the item by name
-      const itemToUpdate = state.items.find(
-        (item) => item.name === name
-      );
+      const item = state.items.find(item => item.id === id);
 
-      if (itemToUpdate) {
-        // Update quantity
-        itemToUpdate.quantity = quantity;
+      if (item) {
+        item.quantity = quantity;
       }
     },
   },
 });
 
-export const { addItem, removeItem, updateQuantity } =
-  CartSlice.actions;
+export const { addItem, removeItem, updateQuantity } = CartSlice.actions;
 
 export default CartSlice.reducer;
